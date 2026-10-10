@@ -25,6 +25,7 @@ html, body {
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  padding: 24px;
 }
 /*
   6. Improve media defaults
@@ -47,22 +48,56 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 /* done with reset */
 
+ul {
+  counter-reset: image;
+  max-width: 1024px;
+  margin: 16px auto 32px;
+  padding: 0;
+}
+
 li {
-	list-style-type: none;
+  list-style-type: none;
+  counter-increment: image;
+  margin-bottom: 40px;
 }
 
-.subtitle, .grab {
-	display: inline-block;
+.grab::before {
+  content: "Image " counter(image);
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
-li img{
-    max-width: 288px;
-    max-height: 216px;
-    transition: all 0.3s;
+.grab[data-image-number]::before {
+  content: "Image " attr(data-image-number);
 }
 
+.grab img {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  object-position: left center;
+}
 
-.subtitle { 
-	vertical-align: top;
-	padding: 2em;
+.subtitle {
+  display: block;
+  padding-top: 12px;
+}
+
+.image-navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 1024px;
+  margin: 24px auto 0;
+}
+
+.image-navigation button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.image-navigation button:disabled {
+  cursor: default;
 }

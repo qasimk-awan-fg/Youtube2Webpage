@@ -3,6 +3,8 @@
 use warnings;
 use strict;
 use autodie;
+use FindBin qw($Bin);
+use File::Copy qw(copy);
 my $slug = shift @ARGV; 
 my $url = shift @ARGV;
 
@@ -25,13 +27,15 @@ my @timestamps;
 my $out = "index.html";
 -d  'images' || mkdir('images');
 
-system("cp", "../styles.css", ".");
+copy("$Bin/styles.css", "styles.css") or die "Cannot copy styles.css: $!";
+copy("$Bin/viewer.js", "viewer.js") or die "Cannot copy viewer.js: $!";
 
 open (my $outfile, ">", $out); 
 print $outfile <<EOF;
 <html>
 <head>
  <link rel="stylesheet" type="text/css" href="styles.css" />
+ <script src="viewer.js" defer></script>
  </head>
 <body>
 
@@ -88,17 +92,27 @@ print $outfile "
 </ul>
 </body>
 </html>";
+close($outfile);
+close($fh);
 
 
 gen_images (@timestamps);
 
 sub gen_images {
 	my @timestamps = @_;	
+	my %seen;
 
 	foreach my $timestamp (@timestamps) {
+		next if $seen{$timestamp}++;
 	my $ts_filename = $timestamp;
 	$ts_filename =~ s/:/-/g;
-		`ffmpeg -ss "$timestamp" -nostdin -i "$video_file"  -frames:v 1 -q:v "2" -vf scale=1024:-1  "images/$ts_filename.jpg"`;
+		my $result = system(
+			"ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin",
+			"-ss", $timestamp, "-i", $video_file,
+			"-frames:v", "1", "-q:v", "1", "-y",
+			"images/$ts_filename.jpg"
+		);
+		die "Could not create image for $timestamp\n" if $result != 0;
 	}
 
 }

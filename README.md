@@ -19,23 +19,24 @@ To use, run the Perl script with a name for the folder to create, and the video 
 
 ## Output
 
-Running the script create a repository according to the following structure:
+Running the script creates a folder according to the following structure:
 
 ```
 project-name
 ├── images
 │   └── (…).jpg
-├── video.vtt
-├── video.webm
+├── video.*.vtt
+├── video (downloaded media file)
 ├── index.html
-└── styles.css
+├── styles.css
+└── viewer.js
 ```
 
 * The index.html file is the generated webpage.
-* The images directory contains all the screenshots, named according to their timeframe ```hours-minutes-seconds-milliseconds.jpg```.
+* The images directory contains full-resolution screenshots from the downloaded video, saved as high-quality JPEGs and named according to their timeframe ```hours-minutes-seconds-milliseconds.jpg```.
 * The vtt file contains the captions.
-* The webm file contains the video.
-* The css file styles the webpage.
+* The downloaded media file contains the video; its extension depends on the format selected by yt-dlp.
+* The CSS file styles the webpage, and viewer.js adds numbered images, Previous and Next buttons, Left and Right Arrow key navigation, and browser speech for the active caption. Moving to another image stops the previous caption immediately.
 
 ## Example
 
